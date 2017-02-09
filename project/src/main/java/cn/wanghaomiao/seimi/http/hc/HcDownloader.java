@@ -75,6 +75,7 @@ public class HcDownloader implements SeimiDownloader {
         currentReqBuilder = HcRequestGenerator.getHttpRequestBuilder(request,crawlerModel);
         currentRequest = request;
         addCookies(request.getUrl(),request.getSeimiCookies());
+        //org.apache.http.impl.client.InternalHttpClient -> CloseableHttpClient
         httpResponse = hc.execute(currentReqBuilder.build(),httpContext);
         return renderResponse(httpResponse,request,httpContext);
     }

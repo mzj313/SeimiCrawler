@@ -23,6 +23,7 @@ import cn.wanghaomiao.seimi.struct.CrawlerModel;
 import cn.wanghaomiao.seimi.struct.Request;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -89,10 +90,18 @@ public class HcRequestGenerator {
                     }
                 }
             }
-            RequestConfig config = RequestConfig.custom().setProxy(crawlerModel.getProxy()).setCircularRedirectsAllowed(true).build();
+            
+            //mzj modify
+            HttpHost proxy = crawlerModel.getProxy();
+//            if(proxy == null) proxy = new HttpHost("219.150.242.54", 9999);
+            System.out.println("====HcRequestGenerator. 代理服务器: " + proxy);
+			RequestConfig config = RequestConfig.custom().setProxy(proxy).setCircularRedirectsAllowed(true).build();
 
-
-            requestBuilder.setConfig(config).setHeader("User-Agent", crawlerModel.isUseCookie() ? crawlerModel.getCurrentUA() : crawler.getUserAgent());
+            String userAgent = crawlerModel.isUseCookie() ? crawlerModel.getCurrentUA() : crawler.getUserAgent();
+            //request.addHeader("User-Agent", "Mozilla/4.0 (compatible;MSIE 6.0; Windows NT 5.0)");
+            System.out.println("====HcRequestGenerator. User-Agent: " + userAgent);
+            
+			requestBuilder.setConfig(config).setHeader("User-Agent", userAgent);
             requestBuilder.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
             requestBuilder.setHeader("Accept-Language", "zh-CN,zh;q=0.8,en;q=0.6");
         }
