@@ -5,18 +5,19 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.wanghaomiao.dao.mybatis.LjHouseDAO;
-import cn.wanghaomiao.model.LjHouse;
+import cn.wanghaomiao.dao.mybatis.LjHouseZaishouDAO;
+import cn.wanghaomiao.model.LjHouseZaishou;
 import cn.wanghaomiao.seimi.annotation.Crawler;
 import cn.wanghaomiao.seimi.def.BaseSeimiCrawler;
 import cn.wanghaomiao.seimi.struct.Request;
 import cn.wanghaomiao.seimi.struct.Response;
 import cn.wanghaomiao.xpath.model.JXDocument;
 
-@Crawler(name = "ljhouse")
-public class LjHouseCrawler extends BaseSeimiCrawler {
+//在售二手房
+@Crawler(name = "ljhouse_zaishou")
+public class LjHouseZaishouCrawler extends BaseSeimiCrawler {
     @Autowired
-    private LjHouseDAO storeToDbDAO;
+    private LjHouseZaishouDAO storeToDbDAO;
 
     @Override
     public String[] startUrls() {
@@ -48,7 +49,7 @@ public class LjHouseCrawler extends BaseSeimiCrawler {
 
     public void renderBean(Response response) {
         try {
-        	LjHouse lj = response.render(LjHouse.class);
+        	LjHouseZaishou lj = response.render(LjHouseZaishou.class);
         	lj.setUrl(response.getUrl());
             logger.info("bean resolve res={}", lj);
             //使用神器paoding-jade存储到DB

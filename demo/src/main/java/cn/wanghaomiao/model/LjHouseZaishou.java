@@ -4,7 +4,7 @@ import cn.wanghaomiao.seimi.annotation.Xpath;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class LjHouse {
+public class LjHouseZaishou {
     private Integer id;
 
     @Xpath("//h1[@class='main']/text()|//div[@class='sub']/title/text()")
