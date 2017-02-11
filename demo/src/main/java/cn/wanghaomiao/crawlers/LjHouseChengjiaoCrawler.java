@@ -24,9 +24,10 @@ public class LjHouseChengjiaoCrawler extends BaseSeimiCrawler {
     public String[] startUrls() {
         String url = "http://bj.lianjia.com/chengjiao/pg{$rowNo}sf1hu1f2f5y4y3y2y1l2l3bp150ep450/";
         List<String> urlList = new ArrayList<String>();
-        // 总共22页 每次爬5页
-		int[][] rs = { { 0, 20 }, { 20, 40 }, { 40, 60 }, { 60, 80 }, { 80, 100 } };
-		int k = 1;
+        // 总共22页 每次爬10页
+		int[][] rs = { { 0, 10 }, { 10, 20 }, { 20, 30 }, { 30, 40 }, { 40, 50 }, //01234
+				      { 50, 60 }, { 60, 70 }, { 70, 80 }, { 80, 90 }, { 90, 100 } };
+		int k = 6;
 		for (int i = rs[k][0]; i < rs[k][1]; i++) {
 			urlList.add(url.replace("{$rowNo}", "" + (i + 1)));
         }
@@ -58,6 +59,7 @@ public class LjHouseChengjiaoCrawler extends BaseSeimiCrawler {
             logger.info("store success,id = {},changeNum={}", lj.getId(), changeNum);
         } catch (Exception e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();//停止
         }
     }
     

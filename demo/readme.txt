@@ -1,4 +1,4 @@
-http://seimi.wanghaomiao.cn/
+﻿http://seimi.wanghaomiao.cn/
 
 	// [116.226.136.135 8118, 124.88.67.52 843, 171.37.156.133 8123,
 	// 111.165.68.28 8118, 220.174.124.166 9999, 182.39.153.2 8118,
@@ -7,3 +7,9 @@ http://seimi.wanghaomiao.cn/
 	// 9999, 101.231.46.34 8000, 123.13.205.185 8080, 123.4.88.196 8118,
 	// 116.226.136.135 8118, 124.88.67.52 843, 111.165.68.28 8118,
 	// 220.174.124.166 9999]
+
+	
+SHOW TABLE STATUS;#Auto_increment当前该表的最大自增ID
+#修改自增id
+alter table ljhouse_chengjiao AUTO_INCREMENT=1801;
+delete from ljhouse_chengjiao where id>1800;
