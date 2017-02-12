@@ -2,7 +2,6 @@ package cn.wanghaomiao.crawlers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,11 +23,8 @@ public class LjHouseChengjiaoCrawler extends BaseSeimiCrawler {
     public String[] startUrls() {
         String url = "http://bj.lianjia.com/chengjiao/pg{$rowNo}sf1hu1f2f5y4y3y2y1l2l3bp150ep450/";
         List<String> urlList = new ArrayList<String>();
-        // 总共22页 每次爬10页
-		int[][] rs = { { 0, 10 }, { 10, 20 }, { 20, 30 }, { 30, 40 }, { 40, 50 }, //01234
-				      { 50, 60 }, { 60, 70 }, { 70, 80 }, { 80, 90 }, { 90, 100 } };
-		int k = 6;
-		for (int i = rs[k][0]; i < rs[k][1]; i++) {
+		int startpage = 3481 / 30;// 从0开始
+		for (int i = startpage; i < startpage + 1; i++) {// 每次爬5页
 			urlList.add(url.replace("{$rowNo}", "" + (i + 1)));
         }
 		return urlList.toArray(new String[0]);
@@ -39,9 +35,9 @@ public class LjHouseChengjiaoCrawler extends BaseSeimiCrawler {
         JXDocument doc = response.document();
         try {
             List<Object> urls = doc.sel("//a[@class='img']/@href");
-            logger.info("start... {}", urls.size());
+            logger.info("start... {} {}", urls.size(), response.getUrl());
             for (Object s : urls) {
-            	Thread.sleep(2000);//
+            	Thread.sleep(1000);//
                 push(Request.build(s.toString(), "renderBean"));
             }
         } catch (Exception e) {
@@ -54,16 +50,20 @@ public class LjHouseChengjiaoCrawler extends BaseSeimiCrawler {
         	LjHouseChengjiao lj = response.render(LjHouseChengjiao.class);
         	lj.setUrl(response.getUrl());
             logger.info("bean resolve res={}", lj);
+            if(lj.getTitle().trim().length() <= 0 && lj.getTotalPrice().trim().length()<=0) {
+            	logger.error("标题总价都为空");
+            	return;//退出
+            }
             //使用神器paoding-jade存储到DB
             int changeNum = storeToDbDAO.save(lj);
             logger.info("store success,id = {},changeNum={}", lj.getId(), changeNum);
         } catch (Exception e) {
             e.printStackTrace();
-            Thread.currentThread().interrupt();//停止
+            System.exit(0);;//退出
         }
     }
     
     public static void main(String[] args) {
-		System.out.println(200 * new Random().nextInt(10));
+		System.out.println(30/30);
 	}
 }

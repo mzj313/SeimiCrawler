@@ -9,8 +9,8 @@ CREATE TABLE `blog` (
 CREATE TABLE `ljhouse_zaishou` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(300) DEFAULT NULL,
-  `totalPrice` int,
-  `unitPrice` int,
+  `totalPrice` varchar(11),
+  `unitPrice` varchar(11),
   `roomMainInfo` varchar(255),
   `roomSubInfo` varchar(255),
   `typeMainInfo` varchar(255),
@@ -23,6 +23,7 @@ CREATE TABLE `ljhouse_zaishou` (
   `position3` varchar(255),
   `position4` varchar(255),
   `content` text,
+  `url`  varchar(500),
   `update_time` timestamp,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -30,8 +31,8 @@ CREATE TABLE `ljhouse_zaishou` (
 CREATE TABLE `ljhouse_chengjiao` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(300) DEFAULT NULL,
-  `totalPrice` int,
-  `unitPrice` int,
+  `totalPrice` varchar(11),
+  `unitPrice` varchar(11),
   `roomMainInfo` varchar(255),
   `roomSubInfo` varchar(255),
   `typeMainInfo` varchar(255),
@@ -44,7 +45,29 @@ CREATE TABLE `ljhouse_chengjiao` (
   `position3` varchar(255),
   `position4` varchar(255),
   `content` text,
+  `url`  varchar(500),
   `update_time` timestamp,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `ljhouse_chengjiao2` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(300) DEFAULT NULL,
+  `totalPrice` varchar(11),
+  `unitPrice` varchar(11),
+  `roomMainInfo` varchar(255),
+  `roomSubInfo` varchar(255),
+  `typeMainInfo` varchar(255),
+  `typeSubInfo` varchar(255),
+  `areaMainInfo` varchar(255),
+  `areaSubInfo` varchar(255),
+  `community` varchar(255),
+  `position1` varchar(255),
+  `position2` varchar(255),
+  `position3` varchar(255),
+  `position4` varchar(255),
+  `content` text,
+  `url`  varchar(500),
+  `update_time` timestamp,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
