@@ -71,3 +71,18 @@ CREATE TABLE `ljhouse_chengjiao2` (
   `update_time` timestamp,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ljhouse_xiaoqu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(300) DEFAULT NULL,
+  `houseInfo` varchar(200),
+  `positionInfo1` varchar(255),
+  `positionInfo2` varchar(255),
+  `positionInfo` varchar(255),
+  `tagList` varchar(255),
+  `totalPrice` varchar(255),
+  `num` varchar(255),
+  `url`  varchar(500),
+  `update_time` timestamp,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
