@@ -52,7 +52,7 @@ CREATE TABLE `ljhouse_chengjiao` (
 
 CREATE TABLE `ljhouse_chengjiao2` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(300) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
   `totalPrice` varchar(11),
   `unitPrice` varchar(11),
   `roomMainInfo` varchar(255),
@@ -66,6 +66,7 @@ CREATE TABLE `ljhouse_chengjiao2` (
   `position2` varchar(255),
   `position3` varchar(255),
   `position4` varchar(255),
+  `dealDate` varchar(20),
   `content` text,
   `url`  varchar(500),
   `update_time` timestamp,
@@ -80,9 +81,10 @@ CREATE TABLE `ljhouse_xiaoqu` (
   `positionInfo2` varchar(255),
   `positionInfo` varchar(255),
   `tagList` varchar(255),
-  `totalPrice` varchar(255),
+  `averagePrice` varchar(255),
   `num` varchar(255),
   `url`  varchar(500),
   `update_time` timestamp,
+  `totalPage`  int(11),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

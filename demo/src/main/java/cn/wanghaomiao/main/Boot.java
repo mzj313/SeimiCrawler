@@ -10,6 +10,9 @@ public class Boot {
     public static void main(String[] args){
         Seimi s = new Seimi();
 //        s.goRun("ljhouse_zaishou");
-        s.goRun("ljhouse_chengjiao2");
+//        s.goRun("ljhouse_chengjiao2");
+//        s.goRun("ljhouse_xiaoqu");
+//        s.goRun("ljhouse_xiaoqu2");
+        s.goRun("ljhouse_chengjiao3");
     }
 }

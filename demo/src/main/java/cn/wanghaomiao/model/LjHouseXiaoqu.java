@@ -1,5 +1,7 @@
 package cn.wanghaomiao.model;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import cn.wanghaomiao.seimi.annotation.Xpath;
 
 public class LjHouseXiaoqu {
@@ -11,24 +13,34 @@ public class LjHouseXiaoqu {
     @Xpath("//div[@class='houseInfo']/a[first()]/text()")
     private String houseInfo;//30天成交几套
     
-    @Xpath("//div[@class='positionInfo1']/a[first()]/text()")
+    @Xpath("//div[@class='positionInfo']/a[first()]/text()")
     private String positionInfo1;//区
-    @Xpath("//div[@class='positionInfo2']/a[last()]/text()")
+    @Xpath("//div[@class='positionInfo']/a[last()]/text()")
     private String positionInfo2;//片
     @Xpath("//div[@class='positionInfo']/text()")
     private String positionInfo;//
     @Xpath("//div[@class='tagList']/span/text()")
     private String tagList;//
     
-    @Xpath("//span[@class='totalPrice']/text()")
-    private String totalPrice;//小区均价
-    @Xpath("//span[@class='totalPrice']/sup/text()")
+    @Xpath("//div[@class='xiaoquListItemPrice']/div[@class='totalPrice']/span/text()")
+    private String averagePrice;//小区参考均价
+    @Xpath("//div[@class='xiaoquListItemSellCount']/a/span/text()")
     private String num;//在售套数
     
     @Xpath("//div[@class='title']/a/@href")
     private String url;
     
-    public String getUrl() {
+    private Integer totalPage;
+    
+    public Integer getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(Integer totalPage) {
+		this.totalPage = totalPage;
+	}
+
+	public String getUrl() {
 		return url;
 	}
 
@@ -92,12 +104,12 @@ public class LjHouseXiaoqu {
 		this.tagList = tagList;
 	}
 
-	public String getTotalPrice() {
-		return totalPrice;
+	public String getAveragePrice() {
+		return averagePrice;
 	}
 
-	public void setTotalPrice(String totalPrice) {
-		this.totalPrice = totalPrice;
+	public void setAveragePrice(String totalPrice) {
+		this.averagePrice = totalPrice;
 	}
 
 	public String getNum() {
@@ -108,4 +120,8 @@ public class LjHouseXiaoqu {
 		this.num = num;
 	}
 
+	@Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

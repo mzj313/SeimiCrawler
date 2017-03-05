@@ -39,13 +39,23 @@ public class LjHouseChengjiao2 {
     private String position3;//位置几环
     @Xpath("//div[@class='dealDate']/text()")
     private String position4;//附加信息
+    @Xpath("//div[@class='dealDate']/text()")
+    private String dealDate;//附加信息
 
     @Xpath("//span[@class='dealHouseTxt']/span/text()")
     private String content;
     
     private String url;
     
-    public String getUrl() {
+    public String getDealDate() {
+		return dealDate;
+	}
+
+	public void setDealDate(String dealDate) {
+		this.dealDate = dealDate;
+	}
+
+	public String getUrl() {
 		return url;
 	}
 
