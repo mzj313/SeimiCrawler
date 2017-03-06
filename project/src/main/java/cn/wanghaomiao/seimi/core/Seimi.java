@@ -113,7 +113,7 @@ public class Seimi extends SeimiContext {
                 request.setUrl(url);
                 request.setCallBack("start");
                 queue.push(request);
-                logger.info("{} url={} started",crawlerName,url);
+                logger.info("{} url: {} started",crawlerName,url);
             }
             trigger = true;
         }

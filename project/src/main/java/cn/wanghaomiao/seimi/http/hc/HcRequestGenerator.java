@@ -94,6 +94,11 @@ public class HcRequestGenerator {
             //mzj modify
             HttpHost proxy = crawlerModel.getProxy();
 //            if(proxy == null) proxy = new HttpHost("219.150.242.54", 9999);
+//            if(proxy == null) proxy = new HttpHost("124.88.67.52", 843);
+//            if(proxy == null) proxy = new HttpHost("58.59.68.91", 9797);
+//            if(proxy == null) proxy = new HttpHost("58.67.159.50", 80);
+//            if(proxy == null) proxy = new HttpHost("182.39.153.2", 8118);
+//            if(proxy == null) proxy = new HttpHost("123.13.205.185", 8080);//
             System.out.println("====HcRequestGenerator. 代理服务器: " + proxy);
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).setCircularRedirectsAllowed(true).build();
 
@@ -104,6 +109,13 @@ public class HcRequestGenerator {
 			requestBuilder.setConfig(config).setHeader("User-Agent", userAgent);
             requestBuilder.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
             requestBuilder.setHeader("Accept-Language", "zh-CN,zh;q=0.8,en;q=0.6");
+            
+            //mzj add
+            requestBuilder.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.112 Safari/537.36");
+            requestBuilder.setHeader("Cookie", "lianjia_uuid=1a6aa839-9a41-475b-b53c-2441b3aedd6a; select_city=110000; all-lj=3e56656136803bc056cf7a329e54869e; _smt_uid=589dbddb.434cda67; CNZZDATA1253477573=1143617682-1486731511-%7C1486819843; CNZZDATA1254525948=146968761-1486730496-%7C1486816905; CNZZDATA1255633284=452336933-1486731501-%7C1486818322; CNZZDATA1255604082=1701734035-1486729061-%7C1486820864; _gat=1; _gat_past=1; _gat_global=1; _gat_new_global=1; _ga=GA1.2.330336557.1486732767; _gat_dianpu_agent=1; lianjia_ssid=3fa5a1b9-211f-4fe8-a8d8-d0a521e0358e");
+            requestBuilder.setHeader("Pragma", "no-cache");
+            requestBuilder.setHeader("Upgrade-Insecure-Requests", "1");
+            requestBuilder.setHeader("Connection", "keep-alive");
         }
         if (!CollectionUtils.isEmpty(request.getHeader())) {
             for (Map.Entry<String, String> entry : request.getHeader().entrySet()) {

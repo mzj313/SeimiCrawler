@@ -54,6 +54,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
             	lj.setAreaSubInfo(subStr(lj.getAreaSubInfo()," ",1).trim());
             	lj.setCommunity(subStr(lj.getCommunity()," ",1).trim());
             	lj.setUrl(response.getUrl());
+            	lj.setRid(getRidFromUrl(response.getUrl()));
 //            	logger.info("bean resolve res={}", lj);
                 if(lj.getTitle().trim().length() <= 0 || lj.getTotalPrice().trim().length()<=0
 						|| lj.getUnitPrice().trim().length() <= 0 || lj.getDealDate().trim().length() <= 0) {
@@ -86,11 +87,12 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 		}
 	}
 
+	static String getRidFromUrl(String url){
+		String t = url.replaceAll("http://bj.lianjia.com/chengjiao/", "").replaceAll("/", "");
+		return t.substring(t.indexOf("c")+1);
+    }
+    
     public static void main(String[] args) {
-		String s = "南 北 | 简装 | 有电梯";
-		System.out.println(subStr(s, "|", 0));
-		System.out.println(subStr(s, "|", 1));
-		System.out.println(subStr(s, "|", 2));
-		
+		System.out.println(getRidFromUrl("http://bj.lianjia.com/chengjiao/pg6c1111027382209/"));
 	}
 }

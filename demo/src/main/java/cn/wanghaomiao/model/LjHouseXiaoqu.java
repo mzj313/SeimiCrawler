@@ -32,7 +32,17 @@ public class LjHouseXiaoqu {
     
     private Integer totalPage;
     
-    public Integer getTotalPage() {
+    private String rid;
+    
+    public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
+	}
+
+	public Integer getTotalPage() {
 		return totalPage;
 	}
 

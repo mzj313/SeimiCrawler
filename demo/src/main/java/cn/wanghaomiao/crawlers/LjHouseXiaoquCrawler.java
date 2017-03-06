@@ -39,6 +39,7 @@ public class LjHouseXiaoquCrawler extends BaseSeimiCrawler {
             for(Object li : lis) {
             	LjHouseXiaoqu lj = SeimiBeanResolver.parse(LjHouseXiaoqu.class, li.toString());
             	lj.setHouseInfo(lj.getHouseInfo().trim());
+            	lj.setRid(getRidFromUrl(lj.getUrl()));
             	logger.info("bean resolve res={}", lj);
                 if(lj.getTitle().trim().length() <= 0 && lj.getAveragePrice().trim().length()<=0) {
                 	logger.error("标题均价都为空");
@@ -52,5 +53,13 @@ public class LjHouseXiaoquCrawler extends BaseSeimiCrawler {
             e.printStackTrace();
         }
     }
+    
+    static String getRidFromUrl(String url){
+		return url.replaceAll("http://bj.lianjia.com/xiaoqu/", "").replaceAll("/", "");
+    }
+    
+    public static void main(String[] args) {
+		System.out.println(getRidFromUrl("http://bj.lianjia.com/xiaoqu/1111027380049/"));
+	}
 
 }

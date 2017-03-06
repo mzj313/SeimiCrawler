@@ -47,7 +47,17 @@ public class LjHouseChengjiao2 {
     
     private String url;
     
-    public String getDealDate() {
+    private String rid;
+    
+    public String getRid() {
+		return rid;
+	}
+
+	public void setRid(String rid) {
+		this.rid = rid;
+	}
+
+	public String getDealDate() {
 		return dealDate;
 	}
 
