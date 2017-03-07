@@ -28,3 +28,20 @@ delete from ljhouse_chengjiao where id in (select id from (
 	)
   and t.id >= 3481
 ) a);
+
+------------------------------------------------------------------------------
+select count(*) from ljhouse_chengjiao2 c,ljhouse_xiaoqu x where c.rid = x.rid;
+--
+select SUBSTR(c.dealDate FROM 1 FOR 7),count(*)
+  from ljhouse_chengjiao3 c
+ where 1 = 1
+ group by SUBSTR(c.dealDate FROM 1 FOR 7)
+ order by c.dealDate desc;
+
+select x.title,x.positionInfo1,SUBSTR(c.dealDate FROM 1 FOR 7),avg(c.unitPrice) 
+  from ljhouse_chengjiao2 c,ljhouse_xiaoqu x
+ where c.rid = x.rid
+ group by x.title,x.positionInfo1,SUBSTR(c.dealDate FROM 1 FOR 7)
+ order by c.dealDate;
+
+select SUBSTR('2016.08.18' FROM 1 FOR 7);
