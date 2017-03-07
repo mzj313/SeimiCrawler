@@ -23,7 +23,7 @@ public class LjHouseXiaoquCrawler2 extends BaseSeimiCrawler {
 
     @Override
     public String[] startUrls() {
-    	List<LjHouseXiaoqu> xiaoquList = storeToDbDAO.selectXiaoqu(null,null);
+    	List<LjHouseXiaoqu> xiaoquList = storeToDbDAO.selectXiaoqu(null,null,null);
     	List<String> urlList = new ArrayList<String>();
     	for(LjHouseXiaoqu xiaoqu : xiaoquList) {
     		String url = xiaoqu.getUrl();

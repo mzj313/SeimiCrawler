@@ -76,6 +76,32 @@ CREATE TABLE `ljhouse_chengjiao2` (
   INDEX `idx_rid` (`rid`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `ljhouse_chengjiao3` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) DEFAULT NULL,
+  `totalPrice` varchar(11),
+  `unitPrice` varchar(11),
+  `roomMainInfo` varchar(255),
+  `roomSubInfo` varchar(255),
+  `typeMainInfo` varchar(255),
+  `typeSubInfo` varchar(255),
+  `areaMainInfo` varchar(255),
+  `areaSubInfo` varchar(255),
+  `community` varchar(255),
+  `position1` varchar(255),
+  `position2` varchar(255),
+  `position3` varchar(255),
+  `position4` varchar(255),
+  `dealDate` varchar(20),
+  `content` text,
+  `url`  varchar(500),
+  `update_time` timestamp,
+  `rid`  varchar(32),
+  PRIMARY KEY (`id`),
+  INDEX `idx` (`title`, `totalPrice`, `unitPrice`, `dealDate`) USING BTREE,
+  INDEX `idx_rid` (`rid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `ljhouse_xiaoqu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(300) DEFAULT NULL,

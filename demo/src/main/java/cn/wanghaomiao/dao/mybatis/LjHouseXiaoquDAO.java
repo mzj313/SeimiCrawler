@@ -17,8 +17,8 @@ public interface LjHouseXiaoquDAO {
 	@Options(useGeneratedKeys = true, keyProperty = "lj.id")
 	int save(@Param("lj") LjHouseXiaoqu lj);
 	
-	@Select("SELECT * FROM ljhouse_xiaoqu WHERE (positionInfo1 = #{positionInfo1} or #{positionInfo1} is null) and (title = #{title} or #{title} is null)")
-	List<LjHouseXiaoqu> selectXiaoqu(@Param("positionInfo1")String positionInfo1, @Param("title")String title);
+	@Select("SELECT * FROM ljhouse_xiaoqu WHERE (positionInfo1 = #{positionInfo1} or #{positionInfo1} is null) and (title = #{title} or #{title} is null) and (rid = #{rid} or #{rid} is null)")
+	List<LjHouseXiaoqu> selectXiaoqu(@Param("positionInfo1")String positionInfo1, @Param("title")String title, @Param("rid")String rid);
 	
 	@Update("update ljhouse_xiaoqu set totalPage = #{totalPage} WHERE url = #{url}")
 	int updateTotalPage(@Param("url")String url, @Param("totalPage")String totalPage);

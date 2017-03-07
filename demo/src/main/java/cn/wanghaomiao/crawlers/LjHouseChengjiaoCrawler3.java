@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import cn.wanghaomiao.dao.mybatis.LjHouseChengjiaoDAO2;
+import cn.wanghaomiao.dao.mybatis.LjHouseChengjiaoDAO3;
 import cn.wanghaomiao.dao.mybatis.LjHouseXiaoquDAO;
-import cn.wanghaomiao.model.LjHouseChengjiao2;
+import cn.wanghaomiao.model.LjHouseChengjiao3;
 import cn.wanghaomiao.model.LjHouseXiaoqu;
 import cn.wanghaomiao.seimi.annotation.Crawler;
 import cn.wanghaomiao.seimi.core.SeimiBeanResolver;
@@ -21,11 +21,11 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 	@Autowired
 	private LjHouseXiaoquDAO xiaoquDAO;
     @Autowired
-    private LjHouseChengjiaoDAO2 storeToDbDAO;
+    private LjHouseChengjiaoDAO3 storeToDbDAO;
 
     @Override
     public String[] startUrls() {
-    	List<LjHouseXiaoqu> xiaoquList = xiaoquDAO.selectXiaoqu(null,null);
+    	List<LjHouseXiaoqu> xiaoquList = xiaoquDAO.selectXiaoqu(null,null,null);
 //    	System.out.println(xiaoquList);
     	List<String> urlList = new ArrayList<String>();
     	for(LjHouseXiaoqu xiaoqu : xiaoquList) {
@@ -45,7 +45,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
         	List<Object> lis = doc.sel("//ul[@class='listContent']/li");
             logger.info("start...  {}", response.getUrl());
             for(Object li : lis) {
-            	LjHouseChengjiao2 lj = SeimiBeanResolver.parse(LjHouseChengjiao2.class, li.toString());
+            	LjHouseChengjiao3 lj = SeimiBeanResolver.parse(LjHouseChengjiao3.class, li.toString());
             	lj.setRoomMainInfo(subStr(lj.getRoomMainInfo()," ",1).trim());
             	lj.setRoomSubInfo(subStr(lj.getRoomSubInfo()," ",0).trim());
             	lj.setTypeMainInfo(subStr(lj.getTypeMainInfo(), "|", 0).trim());
@@ -62,7 +62,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 					continue;
 				}
                 //防止重复写入
-				List<LjHouseChengjiao2> chengjiaoList = storeToDbDAO.selectChengjiao(lj.getTitle(), lj.getTotalPrice(),
+				List<LjHouseChengjiao3> chengjiaoList = storeToDbDAO.selectChengjiao(lj.getTitle(), lj.getTotalPrice(),
 						lj.getUnitPrice(), lj.getDealDate());
                 if(!chengjiaoList.isEmpty()) {
                 	logger.info("记录已存在{}条 id={}",chengjiaoList.size(),chengjiaoList.get(0).getId());

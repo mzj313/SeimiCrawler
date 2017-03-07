@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.wanghaomiao.dao.mybatis.LjHouseChengjiaoDAO2;
+import cn.wanghaomiao.dao.mybatis.LjHouseXiaoquDAO;
 import cn.wanghaomiao.model.LjHouseChengjiao2;
+import cn.wanghaomiao.model.LjHouseXiaoqu;
 import cn.wanghaomiao.seimi.annotation.Crawler;
 import cn.wanghaomiao.seimi.core.SeimiBeanResolver;
 import cn.wanghaomiao.seimi.def.BaseSeimiCrawler;
@@ -16,16 +18,17 @@ import cn.wanghaomiao.xpath.model.JXDocument;
 //成交二手房，从列表页获取，最多只能查100页
 @Crawler(name = "ljhouse_chengjiao2")
 public class LjHouseChengjiaoCrawler2 extends BaseSeimiCrawler {
+	@Autowired
+	private LjHouseXiaoquDAO xiaoquDAO;
     @Autowired
     private LjHouseChengjiaoDAO2 storeToDbDAO;
 
     @Override
     public String[] startUrls() {
-        String url = "http://bj.lianjia.com/chengjiao/pg{$rowNo}sf1hu1f2f5y4y3y2y1l2l3bp150ep450/";
+        String url = "http://bj.lianjia.com/chengjiao/pg{$rowNo}sf1hu1f2f5y4y3y2y1l2l3bp150ep500/";
         List<String> urlList = new ArrayList<String>();
-		int startpage = 1 / 30;// 从0开始
-		for (int i = startpage; i < startpage + 100; i++) {// 每次爬5页
-			urlList.add(url.replace("{$rowNo}", "" + (i + 1)));
+		for (int i = 1; i <= 100; i++) {
+			urlList.add(url.replace("{$rowNo}", "" + i));
         }
 		return urlList.toArray(new String[0]);
     }
@@ -36,7 +39,6 @@ public class LjHouseChengjiaoCrawler2 extends BaseSeimiCrawler {
         try {
         	List<Object> lis = doc.sel("//ul[@class='listContent']/li");
             logger.info("start...  {}", response.getUrl());
-            Thread.sleep(1000);//
             for(Object li : lis) {
             	LjHouseChengjiao2 lj = SeimiBeanResolver.parse(LjHouseChengjiao2.class, li.toString());
             	lj.setRoomMainInfo(subStr(lj.getRoomMainInfo()," ",1).trim());
@@ -46,10 +48,25 @@ public class LjHouseChengjiaoCrawler2 extends BaseSeimiCrawler {
             	lj.setAreaMainInfo(subStr(lj.getAreaMainInfo()," ",2).trim());
             	lj.setAreaSubInfo(subStr(lj.getAreaSubInfo()," ",1).trim());
             	lj.setCommunity(subStr(lj.getCommunity()," ",1).trim());
-            	lj.setUrl(response.getUrl());
+            	lj.setPosition4(response.getUrl());
+            	lj.setRid(subStr(lj.getTitle().trim(), " ", 0));
+            	
+            	List<LjHouseXiaoqu> xiaoquList = xiaoquDAO.selectXiaoqu(null, lj.getRid(), null);
+            	if(!xiaoquList.isEmpty()) {
+            		lj.setRid(xiaoquList.get(0).getRid());
+            	}
+            	
             	logger.info("bean resolve res={}", lj);
-                if(lj.getTitle().trim().length() <= 0 && lj.getTotalPrice().trim().length()<=0) {
-                	logger.error("标题总价都为空");
+                if(lj.getTitle().trim().length() <= 0 || lj.getTotalPrice().trim().length()<=0
+						|| lj.getUnitPrice().trim().length() <= 0 || lj.getDealDate().trim().length() <= 0) {
+                	logger.error("标题或总价或单价或交易日期为空 {}", lj);
+                	continue;
+                }
+                //防止重复写入
+				List<LjHouseChengjiao2> chengjiaoList = storeToDbDAO.selectChengjiao(lj.getTitle(), lj.getTotalPrice(),
+						lj.getUnitPrice(), lj.getDealDate());
+                if(!chengjiaoList.isEmpty()) {
+                	logger.info("记录已存在{}条 id={}",chengjiaoList.size(),chengjiaoList.get(0).getId());
                 	continue;
                 }
                 //使用神器paoding-jade存储到DB
@@ -70,6 +87,11 @@ public class LjHouseChengjiaoCrawler2 extends BaseSeimiCrawler {
 			return s;
 		}
 	}
+	
+	static String getRidFromUrl(String url){
+		String t = url.replaceAll("http://bj.lianjia.com/chengjiao/", "").replaceAll("/", "").replaceAll(".html", "");
+		return t.substring(t.indexOf("c")+1);
+    }
 
     public static void main(String[] args) {
 		String s = "南 北 | 简装 | 有电梯";

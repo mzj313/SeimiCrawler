@@ -13,7 +13,7 @@ import cn.wanghaomiao.seimi.def.BaseSeimiCrawler;
 import cn.wanghaomiao.seimi.struct.Response;
 import cn.wanghaomiao.xpath.model.JXDocument;
 
-//小区信息
+//小区信息，只有100页
 @Crawler(name = "ljhouse_xiaoqu")
 public class LjHouseXiaoquCrawler extends BaseSeimiCrawler {
     @Autowired
@@ -35,7 +35,6 @@ public class LjHouseXiaoquCrawler extends BaseSeimiCrawler {
         try {
         	List<Object> lis = doc.sel("//ul[@class='listContent']/li");
             logger.info("start...  {}", response.getUrl());
-            Thread.sleep(1000);//
             for(Object li : lis) {
             	LjHouseXiaoqu lj = SeimiBeanResolver.parse(LjHouseXiaoqu.class, li.toString());
             	lj.setHouseInfo(lj.getHouseInfo().trim());
@@ -43,6 +42,12 @@ public class LjHouseXiaoquCrawler extends BaseSeimiCrawler {
             	logger.info("bean resolve res={}", lj);
                 if(lj.getTitle().trim().length() <= 0 && lj.getAveragePrice().trim().length()<=0) {
                 	logger.error("标题均价都为空");
+                	continue;
+                }
+                //防止重复写入
+                List<LjHouseXiaoqu> xiaoquList = storeToDbDAO.selectXiaoqu(null, null, lj.getRid());
+                if(!xiaoquList.isEmpty()) {
+                	logger.info("记录已存在{}条 title={}",xiaoquList.size(),xiaoquList.get(0).getTitle());
                 	continue;
                 }
                 //使用神器paoding-jade存储到DB

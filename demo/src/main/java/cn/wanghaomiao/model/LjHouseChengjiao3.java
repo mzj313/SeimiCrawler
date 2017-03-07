@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 //从列表页获取
-public class LjHouseChengjiao2 {
+public class LjHouseChengjiao3 {
     private Integer id;
 
     @Xpath("//div[@class='title']/a/text()")
@@ -35,15 +35,16 @@ public class LjHouseChengjiao2 {
     
     private String position1;//所处区
     private String position2;//所处片
+    
     private String position3;//位置几环
-    private String position4;
+    @Xpath("//div[@class='dealDate']/text()")
+    private String position4;//附加信息
     @Xpath("//div[@class='dealDate']/text()")
     private String dealDate;//附加信息
 
     @Xpath("//span[@class='dealHouseTxt']/span/text()")
     private String content;
     
-    @Xpath("//div[@class='title']/a/@href")
     private String url;
     
     private String rid;
