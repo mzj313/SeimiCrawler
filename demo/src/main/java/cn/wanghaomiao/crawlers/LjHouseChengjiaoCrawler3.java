@@ -39,43 +39,56 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
     }
 
     @Override
-    public void start(Response response) {
-    	JXDocument doc = response.document();
-        try {
-        	List<Object> lis = doc.sel("//ul[@class='listContent']/li");
-            logger.info("start...  {}", response.getUrl());
-            for(Object li : lis) {
-            	LjHouseChengjiao3 lj = SeimiBeanResolver.parse(LjHouseChengjiao3.class, li.toString());
-            	lj.setRoomMainInfo(subStr(lj.getRoomMainInfo()," ",1).trim());
-            	lj.setRoomSubInfo(subStr(lj.getRoomSubInfo()," ",0).trim());
-            	lj.setTypeMainInfo(subStr(lj.getTypeMainInfo(), "|", 0).trim());
-            	lj.setTypeSubInfo(subStr(lj.getTypeSubInfo(), "|", 1).trim());
-            	lj.setAreaMainInfo(subStr(lj.getAreaMainInfo()," ",2).trim());
-            	lj.setAreaSubInfo(subStr(lj.getAreaSubInfo()," ",1).trim());
-            	lj.setCommunity(subStr(lj.getCommunity()," ",1).trim());
-            	lj.setUrl(response.getUrl());
-            	lj.setRid(getRidFromUrl(response.getUrl()));
-//            	logger.info("bean resolve res={}", lj);
-                if(lj.getTitle().trim().length() <= 0 || lj.getTotalPrice().trim().length()<=0
+	public void start(Response response) {
+		JXDocument doc = response.document();
+		try {
+			List<Object> lis = doc.sel("//ul[@class='listContent']/li");
+			logger.info("start...  {}", response.getUrl());
+			String rid = getRidFromUrl(response.getUrl());
+			if (lis.isEmpty()) {
+				logger.error("流量异常或页面改版！");
+				System.exit(0);
+				return;
+			}
+			for (Object li : lis) {
+				LjHouseChengjiao3 lj = SeimiBeanResolver.parse(LjHouseChengjiao3.class, li.toString());
+				lj.setRoomMainInfo(subStr(lj.getRoomMainInfo(), " ", 1).trim());
+				lj.setRoomSubInfo(subStr(lj.getRoomSubInfo(), " ", 0).trim());
+				lj.setTypeMainInfo(subStr(lj.getTypeMainInfo(), "|", 0).trim());
+				lj.setTypeSubInfo(subStr(lj.getTypeSubInfo(), "|", 1).trim());
+				lj.setAreaMainInfo(subStr(lj.getAreaMainInfo(), " ", 2).trim());
+				lj.setAreaSubInfo(subStr(lj.getAreaSubInfo(), " ", 1).trim());
+				lj.setCommunity(subStr(lj.getCommunity(), " ", 1).trim());
+				lj.setUrl(response.getUrl());
+				lj.setRid(rid);
+				// logger.info("bean resolve res={}", lj);
+				if (lj.getTitle().trim().length() <= 0 || lj.getTotalPrice().trim().length() <= 0
 						|| lj.getUnitPrice().trim().length() <= 0 || lj.getDealDate().trim().length() <= 0) {
 					logger.error("标题或总价或单价或交易日期为空 {}", lj);
 					continue;
 				}
-                //防止重复写入
+				// 防止重复写入
 				List<LjHouseChengjiao3> chengjiaoList = storeToDbDAO.selectChengjiao(lj.getTitle(), lj.getTotalPrice(),
 						lj.getUnitPrice(), lj.getDealDate());
-                if(!chengjiaoList.isEmpty()) {
-                	logger.info("记录已存在{}条 id={}",chengjiaoList.size(),chengjiaoList.get(0).getId());
-                	continue;
-                }
-                //使用神器paoding-jade存储到DB
-                int changeNum = storeToDbDAO.save(lj);
-                logger.info("store success,id = {},changeNum={}", lj.getId(), changeNum);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+				if (!chengjiaoList.isEmpty()) {
+					logger.info("记录已存在{}条 id={}", chengjiaoList.size(), chengjiaoList.get(0).getId());
+					continue;
+				}
+				// 使用神器paoding-jade存储到DB
+				int changeNum = storeToDbDAO.save(lj);
+				logger.info("store success,id = {},changeNum={}", lj.getId(), changeNum);
+			}
+			// 更新xiaoqu表已获取页数
+			List<LjHouseXiaoqu> xiaoquList = xiaoquDAO.selectXiaoqu(null, null, rid);
+			if (!xiaoquList.isEmpty()) {
+				LjHouseXiaoqu xiaoqu = xiaoquList.get(0);
+				xiaoqu.setFetchPage((xiaoqu.getFetchPage() == null ? 0 : xiaoqu.getFetchPage()) + 1);
+				xiaoquDAO.update(xiaoqu);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
     
     // s用sp分隔取第i个
 	protected static String subStr(String s, String sp, int i) {

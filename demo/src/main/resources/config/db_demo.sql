@@ -115,6 +115,7 @@ CREATE TABLE `ljhouse_xiaoqu` (
   `url`  varchar(500),
   `update_time` timestamp,
   `totalPage`  int(11),
+  `fetchPage`  int(11),
   `rid`  varchar(32),
   PRIMARY KEY (`id`),
   INDEX `idx` (`title`, `positionInfo1`, `positionInfo2`) USING BTREE ,

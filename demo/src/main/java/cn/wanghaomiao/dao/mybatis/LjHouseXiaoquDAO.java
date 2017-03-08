@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import cn.wanghaomiao.model.LjHouseXiaoqu;
 
@@ -22,4 +23,9 @@ public interface LjHouseXiaoquDAO {
 	
 	@Update("update ljhouse_xiaoqu set totalPage = #{totalPage} WHERE url = #{url}")
 	int updateTotalPage(@Param("url")String url, @Param("totalPage")String totalPage);
+	
+	//LjHouseXiaoquProvider必须为public
+	@UpdateProvider(type=LjHouseXiaoquProvider.class, method="update") 
+	int update(LjHouseXiaoqu lj);
 }
+

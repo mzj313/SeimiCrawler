@@ -30,7 +30,8 @@ public class LjHouseXiaoqu {
     @Xpath("//div[@class='title']/a/@href")
     private String url;
     
-    private Integer totalPage;
+    private Integer totalPage;//总页数
+    private Integer fetchPage;//已获取页数
     
     private String rid;
     
@@ -40,6 +41,14 @@ public class LjHouseXiaoqu {
 
 	public void setRid(String rid) {
 		this.rid = rid;
+	}
+
+	public Integer getFetchPage() {
+		return fetchPage;
+	}
+
+	public void setFetchPage(Integer fetchPage) {
+		this.fetchPage = fetchPage;
 	}
 
 	public Integer getTotalPage() {
