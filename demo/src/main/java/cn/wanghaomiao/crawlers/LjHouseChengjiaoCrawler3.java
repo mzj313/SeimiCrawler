@@ -47,7 +47,14 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 			String rid = getRidFromUrl(response.getUrl());
 			if (lis.isEmpty()) {
 				logger.error("流量异常或页面改版！");
-				System.exit(0);
+				new Thread() {
+					public void run() {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {}
+						System.exit(0);
+					};
+				}.start();
 				return;
 			}
 			for (Object li : lis) {
