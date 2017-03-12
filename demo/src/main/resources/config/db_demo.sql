@@ -99,7 +99,8 @@ CREATE TABLE `ljhouse_chengjiao3` (
   `rid`  varchar(32),
   PRIMARY KEY (`id`),
   INDEX `idx` (`title`, `totalPrice`, `unitPrice`, `dealDate`) USING BTREE,
-  INDEX `idx_rid` (`rid`) USING BTREE
+  INDEX `idx_rid` (`rid`) USING BTREE,
+  INDEX `idx_time` (`update_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `ljhouse_xiaoqu` (
@@ -121,3 +122,32 @@ CREATE TABLE `ljhouse_xiaoqu` (
   INDEX `idx` (`title`, `positionInfo1`, `positionInfo2`) USING BTREE ,
   INDEX `idx_rid` (`rid`) USING BTREE 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ljhouse_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(64),
+  `msg` varchar(255) DEFAULT NULL,
+  `createtime` timestamp,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ljhouse_district` (
+  `id` int(11) NOT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  INDEX `idx` (`name`) USING BTREE 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('1', '西城');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('2', '东城');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('3', '海淀');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('4', '朝阳');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('5', '石景山');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('6', '丰台');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('7', '通州');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('8', '门头沟');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('9', '顺义');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('10', '大兴');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('11', '房山');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('12', '昌平');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('13', '亦庄开发区');
+INSERT INTO `ljhouse_district` (`id`, `name`) VALUES ('14', '燕郊');

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.wanghaomiao.dao.mybatis.LjHouseChengjiaoDAO3;
+import cn.wanghaomiao.dao.mybatis.LjHouseLogDAO;
 import cn.wanghaomiao.dao.mybatis.LjHouseXiaoquDAO;
 import cn.wanghaomiao.model.LjHouseChengjiao3;
 import cn.wanghaomiao.model.LjHouseXiaoqu;
@@ -18,10 +19,13 @@ import cn.wanghaomiao.xpath.model.JXDocument;
 //成交二手房，从按小区查成交的列表页获取，最多只能查100页
 @Crawler(name = "ljhouse_chengjiao3")
 public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
+	static int errNum = 0;
 	@Autowired
 	private LjHouseXiaoquDAO xiaoquDAO;
     @Autowired
     private LjHouseChengjiaoDAO3 storeToDbDAO;
+    @Autowired
+    LjHouseLogDAO ljHouseLogDAO;
 
     @Override
     public String[] startUrls() {
@@ -47,14 +51,9 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 			String rid = getRidFromUrl(response.getUrl());
 			if (lis.isEmpty()) {
 				logger.error("流量异常或页面改版！");
-				new Thread() {
-					public void run() {
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {}
-						System.exit(0);
-					};
-				}.start();
+//				ljHouseLogDAO.save(null, "ljhouse_chengjiao3", response.getUrl() + " 流量异常或页面改版！");
+//				errNum++;
+//				if(errNum > 50) systemExit();
 				return;
 			}
 			for (Object li : lis) {
@@ -95,6 +94,17 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected static void systemExit() {
+		new Thread() {
+			public void run() {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {}
+				System.exit(0);
+			};
+		}.start();
 	}
     
     // s用sp分隔取第i个
