@@ -34,7 +34,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
     	List<String> urlList = new ArrayList<String>();
     	for(LjHouseXiaoqu xiaoqu : xiaoquList) {
     		String xqurl = xiaoqu.getUrl();//http://bj.lianjia.com/xiaoqu/1111027379001/
-			for (int i = 1; i <= xiaoqu.getTotalPage(); i++) {
+			for (int i = xiaoqu.getFetchPage(); i <= xiaoqu.getTotalPage(); i++) {
     			String url = xqurl.replaceAll("/xiaoqu/", "/chengjiao/pg" + i + "c");
     			urlList.add(url);
     		}
