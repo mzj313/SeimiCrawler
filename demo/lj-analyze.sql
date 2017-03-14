@@ -40,7 +40,7 @@ select q.id,q.positionInfo1,q.positionInfo2,q.month,ifnull(sum(chengjiaonum),0) 
   from t_shequmonth q left join t_shequmonthprice p 
     on q.positionInfo1 = p.positionInfo1 and q.positionInfo2 = p.positionInfo2 and q.month = p.dealmonth
  where q.month <= '2017.02'
- group by q.month,p.id;
+ group by q.month,q.id;
 select * from t_shequmonthprice2 t;
 #按月按社区统计均价带环比同比t_shequmonthprice3
 create table t_shequmonthprice3 as
