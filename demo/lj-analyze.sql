@@ -33,14 +33,14 @@ select d.id,SUBSTR(c.dealDate FROM 1 FOR 7) dealmonth,x.positionInfo1,x.position
  order by d.id;
 alter table t_shequmonthprice add index idx_shequmonth(`dealmonth`,`positionInfo1`,`positionInfo2`);
 select * from t_shequmonthprice t;
-#按月按社区统计均价t_shequmonthprice2
+#按月按社区统计均价按基干表t_shequmonthprice2
 create table t_shequmonthprice2 as
 select q.id,q.positionInfo1,q.positionInfo2,q.month,ifnull(sum(chengjiaonum),0) chengjiaonum,
        ifnull(ceil(avg(p.unitPrice)),0) unitPrice
   from t_shequmonth q left join t_shequmonthprice p 
     on q.positionInfo1 = p.positionInfo1 and q.positionInfo2 = p.positionInfo2 and q.month = p.dealmonth
  where q.month <= '2017.02'
- group by q.month,q.id;
+ group by q.month,q.id,q.positionInfo1,q.positionInfo2;
 select * from t_shequmonthprice2 t;
 #按月按社区统计均价带环比同比t_shequmonthprice3
 create table t_shequmonthprice3 as
@@ -55,11 +55,12 @@ select a.id,a.month,a.positionInfo1,a.positionInfo2,a.chengjiaonum,
    and ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) 
    and a.id = c.id and a.positionInfo1 = c.positionInfo1
  order by a.month desc,a.id;
+select * from t_shequmonthprice3 t where t.positionInfo2 in ('天宫院','牛街');
 
 select t.month,t.positionInfo1,t.positionInfo2,t.chengjiaonum,t.unitPrice,format(t.month2month,1),format(t.year2year,1)
   from t_shequmonthprice3 t 
  where t.chengjiaonum > 0
- order by t.month desc,t.year2year desc;
+ order by t.positionInfo1,t.positionInfo2,t.month desc,t.year2year desc;
 
 select t.month,
        group_concat(concat(positionInfo1,positionInfo2,lpad(t.unitPrice,6,' ')) order by t.month,t.positionInfo1 desc separator ', ')
@@ -134,7 +135,7 @@ select date_format(date_add(min,interval t200.id-1 month),'%Y.%m') month
 where date_add(min,interval t200.id-1 month) <= max
 ) y
 order by q.id,y.month;
-#按社区按月生成基干表
+#按社区按月生成基干表t_shequmonth
 create table t_shequmonth as
 select sq.*,y.month from 
 (
