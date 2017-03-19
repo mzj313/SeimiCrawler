@@ -41,6 +41,7 @@ select q.id,q.positionInfo1,q.positionInfo2,q.month,ifnull(sum(chengjiaonum),0) 
     on q.positionInfo1 = p.positionInfo1 and q.positionInfo2 = p.positionInfo2 and q.month = p.dealmonth
  where q.month <= '2017.02'
  group by q.month,q.id,q.positionInfo1,q.positionInfo2;
+alter table t_shequmonthprice2 add index idx_shequmonthprice2(`id`,`positionInfo1`,`month`);
 select * from t_shequmonthprice2 t;
 #按月按社区统计均价带环比同比t_shequmonthprice3
 create table t_shequmonthprice3 as
@@ -51,9 +52,9 @@ select a.id,a.month,a.positionInfo1,a.positionInfo2,a.chengjiaonum,
        (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_shequmonthprice2 t) b,
        (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_shequmonthprice2 t) c
  where ((year(a.monthd) - year(b.monthd))*12+(month(a.monthd) - month(b.monthd)) = 1) 
-   and a.id = b.id and a.positionInfo1 = b.positionInfo1
+   and a.id = b.id and a.positionInfo1 = b.positionInfo1 and a.positionInfo2 = b.positionInfo2
    and ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) 
-   and a.id = c.id and a.positionInfo1 = c.positionInfo1
+   and a.id = c.id and a.positionInfo1 = c.positionInfo1 and a.positionInfo2 = c.positionInfo2
  order by a.month desc,a.id;
 select * from t_shequmonthprice3 t where t.positionInfo2 in ('天宫院','牛街');
 
