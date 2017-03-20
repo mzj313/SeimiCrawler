@@ -48,13 +48,15 @@ create table t_shequmonthprice3 as
 select a.id,a.month,a.positionInfo1,a.positionInfo2,a.chengjiaonum,
        a.unitPrice,b.unitPrice unitPrice_preMonth,c.unitPrice unitPrice_preYear,
        (a.unitPrice-b.unitPrice)/b.unitPrice*100 month2month,(a.unitPrice-c.unitPrice)/c.unitPrice*100 year2year
-  from (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_shequmonthprice2 t) a,
-       (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_shequmonthprice2 t) b,
+  from (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_shequmonthprice2 t) a 
+       left join
+       (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_shequmonthprice2 t) b 
+       on ((year(a.monthd) - year(b.monthd))*12+(month(a.monthd) - month(b.monthd)) = 1) 
+           and a.id = b.id and a.positionInfo1 = b.positionInfo1 and a.positionInfo2 = b.positionInfo2
+       left join
        (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_shequmonthprice2 t) c
- where ((year(a.monthd) - year(b.monthd))*12+(month(a.monthd) - month(b.monthd)) = 1) 
-   and a.id = b.id and a.positionInfo1 = b.positionInfo1 and a.positionInfo2 = b.positionInfo2
-   and ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) 
-   and a.id = c.id and a.positionInfo1 = c.positionInfo1 and a.positionInfo2 = c.positionInfo2
+       on ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) 
+           and a.id = c.id and a.positionInfo1 = c.positionInfo1 and a.positionInfo2 = c.positionInfo2
  order by a.month desc,a.id;
 select * from t_shequmonthprice3 t where t.positionInfo2 in ('天宫院','牛街');
 
@@ -87,11 +89,13 @@ create table t_qumonthprice2 as
 select a.id,a.month,a.name,a.chengjiaonum,
        a.unitPrice,b.unitPrice unitPrice_preMonth,c.unitPrice unitPrice_preYear,
        (a.unitPrice-b.unitPrice)/b.unitPrice*100 month2month,(a.unitPrice-c.unitPrice)/c.unitPrice*100 year2year
-  from (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_qumonthprice t) a,
-       (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_qumonthprice t) b,
+  from (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_qumonthprice t) a
+       left join 
+       (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_qumonthprice t) b
+       on ((year(a.monthd) - year(b.monthd))*12+(month(a.monthd) - month(b.monthd)) = 1)  and a.id = b.id
+       left join 
        (select t.*,str_to_date(t.month,'%Y.%m') monthd from t_qumonthprice t) c
- where ((year(a.monthd) - year(b.monthd))*12+(month(a.monthd) - month(b.monthd)) = 1)  and a.id = b.id
-   and ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) and a.id = c.id
+       on ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) and a.id = c.id
  order by a.month desc,a.id;
 select * from t_qumonthprice2 t;
 
