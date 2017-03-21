@@ -38,6 +38,15 @@ public class LjController {
 		json.put("list", list);
 		return json;
 	}
+	
+	@RequestMapping("/xiaoqu")
+	public Object getXiaoquList(ModelMap modelMap,String quid,String shequid) {
+		String sql = "select id,title name from ljhouse_xiaoqu t where t.positionInfo1=? and t.positionInfo2 = ? order by convert(title USING gbk)";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, quid, shequid);
+		JSONObject json = new JSONObject();
+		json.put("list", list);
+		return json;
+	}
 
 	// http://localhost:8080/lj/shequPrice
 	@RequestMapping("/shequPrice")

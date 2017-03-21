@@ -45,6 +45,41 @@
 		},function(err){
 			console.error(err);
 		});
+	    $(shequComb).val(1);
+		var xiaoquCombs = $('.div').find('select[name="xiaoquComb"]');
+		$.each(xiaoquCombs, function(index, e){
+			initXiaoqu(e);
+		});
+	}
+	
+	$(".div #shequComb").change(function() {
+		var shequid = $(this).val();
+		var divid = $(this).parents('.div')[0].id;
+		var xiaoquComb = $(this).parents('.div').find('select[name="xiaoquComb"]')[0];
+		initXiaoqu(xiaoquComb,shequid);
+	});
+	
+	function initXiaoqu(xiaoquComb,shequid,quid){
+		if(!shequid) {
+			var shequComb = $(xiaoquComb).parents('.div').find('select[name="shequComb"]')[0];
+			shequid = $(shequComb).val();
+		}
+		if(!quid) {
+			var quComb = $(xiaoquComb).parents('.div').find('select[name="quComb"]')[0];
+			quid = $(quComb).val();
+		}
+		var param={quid:'',shequid:''};
+		param.quid = quid;
+		param.shequid = shequid;
+//		ajaxRequest.getShequList(param).then(function(data){
+		$.getJSON(base+'/lj/xiaoqu', param, function(data) {
+			$(xiaoquComb).empty();
+			$.each(data.list, function(index, e){
+				$(xiaoquComb).append("<option value='" + e.name + "'>" + e.name + "</option>");
+			});
+		},function(err){
+			console.error(err);
+		});
 	}
 
 	$("#btnOk").click(function() {
