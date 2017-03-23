@@ -19,7 +19,7 @@ public interface LjHouseXiaoquDAO {
 	int save(@Param("lj") LjHouseXiaoqu lj);
 	
 	@Select("SELECT * FROM ljhouse_xiaoqu WHERE (positionInfo1 = #{positionInfo1} or #{positionInfo1} is null) and (title = #{title} or #{title} is null) and (rid = #{rid} or #{rid} is null)"
-			+ " and fetchPage=3 and totalPage>fetchPage"
+			+ " and totalPage>fetchPage and fetchPage=3 limit 50"
 			)
 	List<LjHouseXiaoqu> selectXiaoqu(@Param("positionInfo1")String positionInfo1, @Param("title")String title, @Param("rid")String rid);
 	

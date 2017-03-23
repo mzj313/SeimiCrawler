@@ -10,7 +10,7 @@ select x.rid,x.title,SUBSTR(c.dealDate FROM 1 FOR 7) dealmonth,x.positionInfo1,x
 alter table t_xiaoqumonthprice add index idx_qu_month(`rid`,`dealmonth`,`positionInfo1`,`positionInfo2`);
 select * from t_xiaoqumonthprice t;
 #按月按小区统计均价增加环比同比t_xiqoqumonthprice2
-create table t_xiqoqumonthprice2 as
+create table t_xiaoqumonthprice2 as
 select a.dealmonth,a.positionInfo1,a.positionInfo2,a.title,a.chengjiaonum,
        a.unitPrice,b.unitPrice unitPrice_preMonth,c.unitPrice unitPrice_preYear,
        (a.unitPrice-b.unitPrice)/b.unitPrice*100 month2month,(a.unitPrice-c.unitPrice)/c.unitPrice*100 year2year
@@ -20,7 +20,7 @@ select a.dealmonth,a.positionInfo1,a.positionInfo2,a.title,a.chengjiaonum,
  where ((year(a.monthd) - year(b.monthd))*12+(month(a.monthd) - month(b.monthd)) = 1)  and a.rid = b.rid
    and ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) and a.rid = c.rid
  order by a.dealmonth desc;
-select * from t_xiqoqumonthprice2 t;
+select * from t_xiaoqumonthprice2 t;
 #------------------
 #按月按社区统计均价t_shequmonthprice
 create table t_shequmonthprice as

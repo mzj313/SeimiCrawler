@@ -47,7 +47,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 		JXDocument doc = response.document();
 		try {
 			List<Object> lis = doc.sel("//ul[@class='listContent']/li");
-			logger.info("start...  {}", response.getUrl());
+//			logger.info("start...  {}", response.getUrl());
 			String rid = getRidFromUrl(response.getUrl());
 			if (lis.isEmpty()) {
 				logger.error("流量异常或页面改版！");
@@ -70,14 +70,14 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 				// logger.info("bean resolve res={}", lj);
 				if (lj.getTitle().trim().length() <= 0 || lj.getTotalPrice().trim().length() <= 0
 						|| lj.getUnitPrice().trim().length() <= 0 || lj.getDealDate().trim().length() <= 0) {
-					logger.error("标题或总价或单价或交易日期为空 {}", lj);
+					logger.error("标题或总价或单价或交易日期为空 {}", lj.getTitle() + " " + lj.getUrl());
 					continue;
 				}
 				// 防止重复写入
 				List<LjHouseChengjiao3> chengjiaoList = storeToDbDAO.selectChengjiao(lj.getTitle(), lj.getTotalPrice(),
 						lj.getUnitPrice(), lj.getDealDate());
 				if (!chengjiaoList.isEmpty()) {
-					logger.info("记录已存在{}条 id={}", chengjiaoList.size(), chengjiaoList.get(0).getId());
+//					logger.info("记录已存在{}条 id={}", chengjiaoList.size(), chengjiaoList.get(0).getId());
 					continue;
 				}
 				// 使用神器paoding-jade存储到DB
@@ -88,8 +88,10 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 			List<LjHouseXiaoqu> xiaoquList = xiaoquDAO.selectXiaoqu(null, null, rid);
 			if (!xiaoquList.isEmpty()) {
 				LjHouseXiaoqu xiaoqu = xiaoquList.get(0);
-				xiaoqu.setFetchPage((xiaoqu.getFetchPage() == null ? 0 : xiaoqu.getFetchPage()) + 1);
+				int fetchPage = (xiaoqu.getFetchPage() == null ? 0 : xiaoqu.getFetchPage()) + 1;
+				xiaoqu.setFetchPage(fetchPage);
 				xiaoquDAO.update(xiaoqu);
+				logger.info("{} 更新获取页数为 {}", xiaoqu.getTitle(), fetchPage);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
