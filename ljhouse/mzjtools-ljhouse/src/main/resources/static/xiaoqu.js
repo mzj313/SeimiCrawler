@@ -8,7 +8,7 @@
 		ajaxRequest.getQuList().then(function(data){
 //		$.getJSON('http://localhost:8080/lj/qu', function(data) {
 			$.each(data.list, function(index, e){
-				$('#div1 #quComb').append("<option title='aa' value='" + e.id + "'>" + e.name + "</option>");
+				$('#div1 #quComb').append("<option value='" + e.id + "'>" + e.name + "</option>");
 				$('#div2 #quComb').append("<option value='" + e.id + "'>" + e.name + "</option>");
 				$('#div1 #quComb').val(3);
 				$('#div2 #quComb').val(3);
@@ -16,9 +16,15 @@
 		},function(err){
 			 console.error(err);
 		});
+		
 		var shequCombs = $('.div').find('select[name="shequComb"]');
 		$.each(shequCombs, function(index, e){
 			initShequ(e);
+		});
+		
+		var xiaoquCombs = $('.div').find('select[name="xiaoquComb"]');
+		$.each(xiaoquCombs, function(index, e){
+			initXiaoqu(e);
 		});
 	}
 
@@ -37,6 +43,7 @@
 		var param={quid:''};
 		param.quid = quid;
 //		ajaxRequest.getShequList(param).then(function(data){
+		$.ajaxSettings.async = false; 
 		$.getJSON(base+'/lj/shequ', param, function(data) {
 			$(shequComb).empty();
 			$.each(data.list, function(index, e){
@@ -45,11 +52,8 @@
 		},function(err){
 			console.error(err);
 		});
-	    $(shequComb).val(1);
-		var xiaoquCombs = $('.div').find('select[name="xiaoquComb"]');
-		$.each(xiaoquCombs, function(index, e){
-			initXiaoqu(e);
-		});
+		$.ajaxSettings.async = true;
+//	    $(shequComb).val(1);
 	}
 	
 	$(".div #shequComb").change(function() {
@@ -66,11 +70,13 @@
 		}
 		if(!quid) {
 			var quComb = $(xiaoquComb).parents('.div').find('select[name="quComb"]')[0];
-			quid = $(quComb).val();
-		}
+//			quid = $(quComb).val();
+			quid = $(quComb).find('option:selected').text();
+		}	
 		var param={quid:'',shequid:''};
 		param.quid = quid;
 		param.shequid = shequid;
+		console.log(param);
 //		ajaxRequest.getShequList(param).then(function(data){
 		$.getJSON(base+'/lj/xiaoqu', param, function(data) {
 			$(xiaoquComb).empty();
@@ -155,16 +161,16 @@
   
 	function drawLines() {
 		var myChart = echarts.init(document.getElementById('main'));
-		var shequCombs = $('.div').find('select[name="shequComb"]');
+		var xiaoquCombs = $('.div').find('select[name="xiaoquComb"]');
 		var arr = [];
-		$.each(shequCombs, function(index, e){
+		$.each(xiaoquCombs, function(index, e){
 			if(e.selectedIndex >= 0) {
 				arr[index]=e[e.selectedIndex].innerHTML;
 			}
 		});
 		
-		var param = {shequ : arr.join(',')};
-		$.getJSON(base+'/lj/shequPrice', param, function(data) {
+		var param = {xiaoqu : arr.join(',')};
+		$.getJSON(base+'/lj/xiaoquPrice', param, function(data) {
 			myChart.clear();
 			myChart.showLoading({
 				text : '正在努力的读取数据中...'
