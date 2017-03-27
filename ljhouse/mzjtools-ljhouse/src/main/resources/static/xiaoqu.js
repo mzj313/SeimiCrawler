@@ -11,7 +11,7 @@
 				$('#div1 #quComb').append("<option value='" + e.id + "'>" + e.name + "</option>");
 				$('#div2 #quComb').append("<option value='" + e.id + "'>" + e.name + "</option>");
 				$('#div1 #quComb').val(3);
-				$('#div2 #quComb').val(3);
+				$('#div2 #quComb').val(6);
 			});
 		},function(err){
 			 console.error(err);
