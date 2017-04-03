@@ -20,7 +20,12 @@ select a.dealmonth,a.positionInfo1,a.positionInfo2,a.title,a.chengjiaonum,
  where ((year(a.monthd) - year(b.monthd))*12+(month(a.monthd) - month(b.monthd)) = 1)  and a.rid = b.rid
    and ((year(a.monthd) - year(c.monthd))*12+(month(a.monthd) - month(c.monthd)) = 12) and a.rid = c.rid
  order by a.dealmonth desc;
-select * from t_xiaoqumonthprice2 t;
+
+select m.month,m.positionInfo1,m.positionInfo2,ifnull(n.unitPrice,'') unitPrice
+  from t_xiaoqumonth m left join t_xiaoqumonthprice2 n 
+    on (m.positionInfo1=n.positionInfo1 and m.positionInfo2=n.positionInfo2 and m.month=n.dealmonth and m.title=n.title)
+ where m.month > '2013.01' and m.title in ('建欣苑二里') 
+ order by month;
 #------------------
 #按月按社区统计均价t_shequmonthprice
 create table t_shequmonthprice as
@@ -124,21 +129,16 @@ SET i=i+1;
 END WHILE;
 END$$
 call createT200();
-#按月生成时间列表
-select date_add(min,interval t200.id-1 month)
+#按月生成时间列表t_month
+create table if not exists t_month as
+select date_format(date_add(min,interval t200.id-1 month),'%Y.%m') month
  from (select str_to_date('2011.1.1','%Y.%m.%d') min,str_to_date('2017.4.1','%Y.%m.%d') max) t,
        t200
 where date_add(min,interval t200.id-1 month) <= max;
 #按区按月生成基干表t_qumonth
 create table t_qumonth as
 select q.name,y.month from 
-ljhouse_district q,
-(
-select date_format(date_add(min,interval t200.id-1 month),'%Y.%m') month
- from (select str_to_date('2011.1.1','%Y.%m.%d') min,str_to_date('2017.4.1','%Y.%m.%d') max) t,
-       t200
-where date_add(min,interval t200.id-1 month) <= max
-) y
+ljhouse_district q,t_month y
 order by q.id,y.month;
 #按社区按月生成基干表t_shequmonth
 create table t_shequmonth as
@@ -147,14 +147,16 @@ select sq.*,y.month from
 select distinct d.id,positionInfo1,positionInfo2 
   from ljhouse_xiaoqu x,ljhouse_district d
  where x.positionInfo1=d.name
-) sq,
-(
-select date_format(date_add(min,interval t200.id-1 month),'%Y.%m') month
- from (select str_to_date('2011.1.1','%Y.%m.%d') min,str_to_date('2017.4.1','%Y.%m.%d') max) t,
-       t200
-where date_add(min,interval t200.id-1 month) <= max
-) y
+) sq,t_month y
 order by sq.id,y.month;
+#按社区按月生成基干表t_xiaoqumonth
+create table t_xiaoqumonth as
+select xq.*,y.month from 
+(
+select distinct id,positionInfo1,positionInfo2,title
+  from ljhouse_xiaoqu x
+) xq,t_month y
+order by xq.id,y.month;
 #--------------------------------------------------------------
 select * from ljhouse_xiaoqu t where t.fetchPage = 3 and t.totalPage > t.fetchPage;#1989
 select * from ljhouse_chengjiao3 t where t.update_time > str_to_date('2017-3-14 12:25:0','%Y-%m-%d %H:%i:%s');

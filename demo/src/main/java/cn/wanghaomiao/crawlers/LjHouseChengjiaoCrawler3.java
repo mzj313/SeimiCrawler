@@ -47,7 +47,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 		JXDocument doc = response.document();
 		try {
 			List<Object> lis = doc.sel("//ul[@class='listContent']/li");
-//			logger.info("start...  {}", response.getUrl());
+//			logger.info("start...  {} lis.size={}", response.getUrl(),lis.size());
 			String rid = getRidFromUrl(response.getUrl());
 			if (lis.isEmpty()) {
 				logger.error("流量异常或页面改版！");
@@ -56,6 +56,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 //				if(errNum > 50) systemExit();
 				return;
 			}
+			int totalChangeNum = 0;
 			for (Object li : lis) {
 				LjHouseChengjiao3 lj = SeimiBeanResolver.parse(LjHouseChengjiao3.class, li.toString());
 				lj.setRoomMainInfo(subStr(lj.getRoomMainInfo(), " ", 1).trim());
@@ -70,7 +71,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 				// logger.info("bean resolve res={}", lj);
 				if (lj.getTitle().trim().length() <= 0 || lj.getTotalPrice().trim().length() <= 0
 						|| lj.getUnitPrice().trim().length() <= 0 || lj.getDealDate().trim().length() <= 0) {
-					logger.error("标题或总价或单价或交易日期为空 {}", lj.getTitle() + " " + lj.getUrl());
+//					logger.error("标题或总价或单价或交易日期为空 {}", lj.getTitle() + " " + lj.getUrl());
 					continue;
 				}
 				// 防止重复写入
@@ -82,7 +83,8 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 				}
 				// 使用神器paoding-jade存储到DB
 				int changeNum = storeToDbDAO.save(lj);
-				logger.info("store success,id = {},changeNum={}", lj.getId(), changeNum);
+//				logger.info("store success,id = {},changeNum={}", lj.getId(), changeNum);
+				totalChangeNum+=changeNum;
 			}
 			// 更新xiaoqu表已获取页数
 			List<LjHouseXiaoqu> xiaoquList = xiaoquDAO.selectXiaoqu(null, null, rid);
@@ -91,7 +93,7 @@ public class LjHouseChengjiaoCrawler3 extends BaseSeimiCrawler {
 				int fetchPage = (xiaoqu.getFetchPage() == null ? 0 : xiaoqu.getFetchPage()) + 1;
 				xiaoqu.setFetchPage(fetchPage);
 				xiaoquDAO.update(xiaoqu);
-				logger.info("{} 更新获取页数为 {}", xiaoqu.getTitle(), fetchPage);
+				logger.info("{} 更新获取页数为 {} 本次增加记录数{}", xiaoqu.getTitle(), fetchPage, totalChangeNum);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

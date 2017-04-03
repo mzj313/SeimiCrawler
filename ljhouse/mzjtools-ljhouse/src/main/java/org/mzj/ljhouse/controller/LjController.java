@@ -1,9 +1,16 @@
 package org.mzj.ljhouse.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -138,8 +145,12 @@ public class LjController {
 		for (int i = 0; i < args.length; i++) {
 			questionMark.append(",?");
 		}
-		String sql = "select * from t_xiaoqumonthprice2 t where t.title in (" + questionMark.substring(1)
-				+ ") order by dealmonth";
+		String sql = "select m.month,m.positionInfo1,m.positionInfo2,m.title,ifnull(n.unitPrice,'') unitPrice "
+				+ " from t_xiaoqumonth m left join t_xiaoqumonthprice2 n "
+				+ " on (m.positionInfo1=n.positionInfo1 and m.positionInfo2=n.positionInfo2 and m.month=n.dealmonth and m.title=n.title) "
+				+ " where m.month > '2013.01' and m.title"
+				+ " in (" + questionMark.substring(1)
+				+ " ) order by month";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
 		System.out.println(list);
 
@@ -152,10 +163,10 @@ public class LjController {
 
 		JSONObject xAxis = new JSONObject();
 		xAxis.put("type", "category");
-		List<Object> xdata = new ArrayList<Object>();
-		Map<String, Object> seriesdataMap = new HashMap<String, Object>();
+		Set<Object> xdataSet = new HashSet<Object>();
+		Map<String, Object> seriesdataMap = new HashMap<String, Object>();//[p1_p2_title=[name=,type=line]]
 		for (Map<String, Object> m : list) {
-			xdata.add(m.get("dealmonth"));
+			xdataSet.add(m.get("month"));
 			String key = m.get("positionInfo1") + "-" + m.get("positionInfo2") + "-" + m.get("title");
 			Map<String, Object> seriesData = (Map<String, Object>) seriesdataMap.get(key);
 			if (seriesData == null) {
@@ -171,6 +182,12 @@ public class LjController {
 			}
 			seriesdata.add(m.get("unitPrice"));
 		}
+		List<Object> xdata = Arrays.asList(xdataSet.toArray());
+		Collections.sort(xdata, new Comparator<Object>(){
+			public int compare(Object o1, Object o2) {
+				return ((String)o1).compareTo((String)o2);
+			}
+		});
 		xAxis.put("data", xdata);
 		option.put("xAxis", xAxis);
 
@@ -178,6 +195,14 @@ public class LjController {
 		yAxis.put("type", "value");
 		option.put("yAxis", yAxis);
 
+		for(Iterator<Object> it = seriesdataMap.values().iterator();it.hasNext();) {
+			List<Object> seriesdata = (List<Object>) ((Map<String, Object>)it.next()).get("data");
+			Collections.sort(seriesdata, new Comparator<Object>(){
+				public int compare(Object o1, Object o2) {
+					return (String.valueOf(o1)).compareTo(String.valueOf(o2));
+				}
+			});
+		}
 		JSONArray series = JSONArray.fromObject(seriesdataMap.values());
 		option.put("series", series);
 		return option;
