@@ -3,6 +3,19 @@
 	var base = "http://localhost:8280";
 	
 	initQu();
+	initInput();
+	
+	var names= [{"pinyin":"zhongguo中国","name":"中国"},{"pinyin":"woaizhongguo我爱中国","name":"我爱中国"},{"pinyin":"ceshi测试","name":"测试"}];  
+	
+	function initInput() {
+		$( "#div1 #xiaoquInput").autocomplete({
+//			source: [ "zhongguo", "zg", "woaizhongguo", "zhrmghg", "cs", "中国", "我爱中国", "中华人民共和国", "测试"]
+			source : base+"/lj/xiaoquname"
+		});
+		$( "#div2 #xiaoquInput").autocomplete({
+			source : base+"/lj/xiaoquname"
+		});
+	}
 
 	function initQu() {
 		ajaxRequest.getQuList().then(function(data){
@@ -76,7 +89,7 @@
 		var param={quid:'',shequid:''};
 		param.quid = quid;
 		param.shequid = shequid;
-		console.log(param);
+//		console.log(param);
 //		ajaxRequest.getShequList(param).then(function(data){
 		$.getJSON(base+'/lj/xiaoqu', param, function(data) {
 			$(xiaoquComb).empty();
@@ -100,7 +113,7 @@
         // 指定图表的配置项和数据
         var option = {
             title: {
-                text: '按社区统计均价'
+                text: '按小区统计均价'
             },
             tooltip: {},
 			legend: {
@@ -168,6 +181,15 @@
 				arr[index]=e[e.selectedIndex].innerHTML;
 			}
 		});
+		//优先取文本框里面的
+		var xiaoquInput1 = $("#div1 #xiaoquInput").val();
+		if(xiaoquInput1!=""){
+			arr[0] = xiaoquInput1;
+		}
+		var xiaoquInput2 = $("#div2 #xiaoquInput").val();
+		if(xiaoquInput2!=""){
+			arr[1] = xiaoquInput2;
+		}
 		
 		var param = {xiaoqu : arr.join(',')};
 		$.getJSON(base+'/lj/xiaoquPrice', param, function(data) {

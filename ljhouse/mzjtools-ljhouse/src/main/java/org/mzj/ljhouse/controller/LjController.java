@@ -23,6 +23,9 @@ import com.github.abel533.echarts.axis.CategoryAxis;
 import com.github.abel533.echarts.axis.ValueAxis;
 import com.github.abel533.echarts.code.Trigger;
 import com.github.abel533.echarts.series.Line;
+import com.github.stuxuhai.jpinyin.PinyinException;
+import com.github.stuxuhai.jpinyin.PinyinFormat;
+import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -54,11 +57,20 @@ public class LjController {
 
 	@RequestMapping("/xiaoqu")
 	public Object getXiaoquList(ModelMap modelMap, String quid, String shequid) {
-		String sql = "select id,title name from ljhouse_xiaoqu t where t.positionInfo1=? and t.positionInfo2 = ? order by convert(title USING gbk)";
-		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, quid, shequid);
+		String sql = "select id,title name from ljhouse_xiaoqu t where (t.positionInfo1=? or ? is null) and (t.positionInfo2 = ? or ? is null) order by convert(title USING gbk)";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, quid, quid, shequid, shequid);
 		JSONObject json = new JSONObject();
 		json.put("list", list);
 		return json;
+	}
+	
+	//jquery-ui的autocomplete默认传的参数就是term
+	@RequestMapping("/xiaoquname")
+	public Object getXiaoqunameList(ModelMap modelMap, String term) {
+		term = '%' + term + "%";
+		String sql = "select title name from ljhouse_xiaoqu t where t.title like ? or t.pinyin like ? or t.shortpinyin like ? order by convert(title USING gbk) limit 10";
+		List<String> list = jdbcTemplate.queryForList(sql, String.class, term, term, term);
+		return JSONArray.fromObject(list);
 	}
 
 	// http://localhost:8080/lj/shequPrice

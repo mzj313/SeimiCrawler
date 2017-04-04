@@ -123,6 +123,10 @@ CREATE TABLE `ljhouse_xiaoqu` (
   INDEX `idx_rid` (`rid`) USING BTREE 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+ALTER TABLE `ljhouse_xiaoqu`
+ADD COLUMN `pinyin`  varchar(100) NULL AFTER `fetchPage`,
+ADD COLUMN `shortpinyin`  varchar(50) NULL AFTER `pinyin`;
+
 CREATE TABLE `ljhouse_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(64),
