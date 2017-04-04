@@ -99,12 +99,13 @@ public class HcRequestGenerator {
 //            if(proxy == null) proxy = new HttpHost("58.67.159.50", 80);
 //            if(proxy == null) proxy = new HttpHost("182.39.153.2", 8118);
 //            if(proxy == null) proxy = new HttpHost("123.13.205.185", 8080);//
-            System.out.println("====HcRequestGenerator. 代理服务器: " + proxy);
+            
+//            System.out.println("====HcRequestGenerator. 代理服务器: " + proxy);
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).setCircularRedirectsAllowed(true).build();
 
             String userAgent = crawlerModel.isUseCookie() ? crawlerModel.getCurrentUA() : crawler.getUserAgent();
             //request.addHeader("User-Agent", "Mozilla/4.0 (compatible;MSIE 6.0; Windows NT 5.0)");
-            System.out.println("====HcRequestGenerator. User-Agent: " + userAgent);
+//            System.out.println("====HcRequestGenerator. User-Agent: " + userAgent);
             
 			requestBuilder.setConfig(config).setHeader("User-Agent", userAgent);
             requestBuilder.setHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
