@@ -85,8 +85,10 @@ public class LjController {
 		for (int i = 0; i < args.length; i++) {
 			questionMark.append(",?");
 		}
-		String sql = "select * from t_shequmonthprice2 t where t.positionInfo2 in (" + questionMark.substring(1)
-				+ ") order by month";
+		String sql = "SELECT m.*, ifnull(n.unitPrice, '') unitPrice FROM t_shequmonth m LEFT JOIN t_shequmonthprice2 n "
+				+ " ON ( m.positionInfo1 = n.positionInfo1 AND m.positionInfo2 = n.positionInfo2 AND m.month = n.month ) "
+				+ " WHERE m.month > '2013.01' AND m.positionInfo2 IN (" + questionMark.substring(1)
+				+ ") ORDER BY month";
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, args);
 		System.out.println(list);
 
@@ -114,10 +116,10 @@ public class LjController {
 
 		JSONObject xAxis = new JSONObject();
 		xAxis.put("type", "category");
-		List<Object> xdata = new ArrayList<Object>();
-		Map<String, Object> seriesdataMap = new HashMap<String, Object>();
+		Set<Object> monthSet = new HashSet<Object>();
+		Map<String, Object> seriesdataMap = new HashMap<String, Object>();//[p1_p2_title=[name=小区名,type=line,data={"30000",...}]]
 		for (Map<String, Object> m : list) {
-			xdata.add(m.get("month"));
+			monthSet.add(m.get("month"));
 			String key = m.get("positionInfo1") + "-" + m.get("positionInfo2");
 			Map<String, Object> seriesData = (Map<String, Object>) seriesdataMap.get(key);
 			if (seriesData == null) {
@@ -133,7 +135,15 @@ public class LjController {
 			}
 			seriesdata.add(m.get("unitPrice"));
 		}
+		//x轴按日期大小排序
+		List<Object> xdata = Arrays.asList(monthSet.toArray());
+		Collections.sort(xdata, new Comparator<Object>(){
+			public int compare(Object o1, Object o2) {
+				return ((String)o1).compareTo((String)o2);
+			}
+		});
 		xAxis.put("data", xdata);
+		xAxis.put("interval", 0);
 		option.put("xAxis", xAxis);
 
 		JSONObject yAxis = new JSONObject();
@@ -142,6 +152,14 @@ public class LjController {
 
 		JSONArray series = JSONArray.fromObject(seriesdataMap.values());
 		option.put("series", series);
+		
+		JSONObject legend = new JSONObject();
+		JSONArray legendData = new JSONArray();
+		for (int i = 0; i < args.length; i++) {
+			legendData.add(args[i]);
+		}
+		legend.put("data", legendData);
+		option.put("legend", legend);
 		return option;
 	}
 
@@ -169,16 +187,16 @@ public class LjController {
 		JSONObject option = new JSONObject();
 
 		JSONObject title = new JSONObject();
-		title.put("text", "按社区统计均价");
+		title.put("text", "按小区统计均价");
 		option.put("title", title);
 		option.put("tooltip", new JSONObject());// 提示信息
 
 		JSONObject xAxis = new JSONObject();
 		xAxis.put("type", "category");
-		Set<Object> xdataSet = new HashSet<Object>();
-		Map<String, Object> seriesdataMap = new HashMap<String, Object>();//[p1_p2_title=[name=,type=line]]
+		Set<Object> monthSet = new HashSet<Object>();
+		Map<String, Object> seriesdataMap = new HashMap<String, Object>();//[p1_p2_title=[name=小区名,type=line,data={"30000",...}]]
 		for (Map<String, Object> m : list) {
-			xdataSet.add(m.get("month"));
+			monthSet.add(m.get("month"));
 			String key = m.get("positionInfo1") + "-" + m.get("positionInfo2") + "-" + m.get("title");
 			Map<String, Object> seriesData = (Map<String, Object>) seriesdataMap.get(key);
 			if (seriesData == null) {
@@ -194,7 +212,8 @@ public class LjController {
 			}
 			seriesdata.add(m.get("unitPrice"));
 		}
-		List<Object> xdata = Arrays.asList(xdataSet.toArray());
+		//x轴按日期大小排序
+		List<Object> xdata = Arrays.asList(monthSet.toArray());
 		Collections.sort(xdata, new Comparator<Object>(){
 			public int compare(Object o1, Object o2) {
 				return ((String)o1).compareTo((String)o2);
@@ -207,16 +226,16 @@ public class LjController {
 		yAxis.put("type", "value");
 		option.put("yAxis", yAxis);
 
-		for(Iterator<Object> it = seriesdataMap.values().iterator();it.hasNext();) {
-			List<Object> seriesdata = (List<Object>) ((Map<String, Object>)it.next()).get("data");
-			Collections.sort(seriesdata, new Comparator<Object>(){
-				public int compare(Object o1, Object o2) {
-					return (String.valueOf(o1)).compareTo(String.valueOf(o2));
-				}
-			});
-		}
 		JSONArray series = JSONArray.fromObject(seriesdataMap.values());
 		option.put("series", series);
+		
+		JSONObject legend = new JSONObject();
+		JSONArray legendData = new JSONArray();
+		for (int i = 0; i < args.length; i++) {
+			legendData.add(args[i]);
+		}
+		legend.put("data", legendData);
+		option.put("legend", legend);
 		return option;
 	}
 }
