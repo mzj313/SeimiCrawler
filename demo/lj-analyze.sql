@@ -167,3 +167,10 @@ select replace('120平米','平米','');
 select (year(max) - year(min))*12+(month(max) - month(min)) monthdiff
   from (select str_to_date('2010.11','%Y.%m') min,str_to_date('2011.1.11','%Y.%m.%d') max) t;
 
+#去重
+delete from ljhouse_xiaoqu where id in 
+(
+select id from ( #mysql必须再包装一下
+select id from ljhouse_xiaoqu t where EXISTS(select 1 from ljhouse_xiaoqu a where a.rid=t.rid and a.id<t.id) and t.pinyin is null
+) s
+);
